@@ -36,10 +36,9 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzjbFHQxPPU9glAfYmU
     };
     // Predefined list of branches for the dropdown and "no participation" check
     const PREDEFINED_BRANCHES = [
-        "Angamaly", "Corporate Office", "Edappally", "Harippad", "Koduvayur", "Kuzhalmannam",
-        "Mattanchery", "Mavelikara", "Nedumkandom", "Nenmara", "Paravoor", "Perumbavoor",
-        "Thiruwillamala", "Thodupuzha", "Chengannur", "Alathur", "Kottayam", "Kattapana",
-        "Muvattupuzha", "Thiruvalla", "Pathanamthitta", "HO KKM" // Corrected "Pathanamthitta" typo if it existed previously
+        "EDAPALLY", "KOTHAMANGALAM", "PALLURUTHY", "ALAPPUZHA", "PARIPPALLY", "PERUMBAVOOR",
+        "MEPPARAMBU", "THIRUVALLA", "ALUVA", "VADAKKEKAD", "KOLLAM", "ANGAMALY",
+        // Corrected "Pathanamthitta" typo if it existed previously
     ].sort();
 
     // --- Column Headers Mapping (IMPORTANT: These must EXACTLY match the column names in your "Form Responses 2" Google Sheet) ---
