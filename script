@@ -3,7 +3,28 @@ document.addEventListener('DOMContentLoaded', () => {
 const DATA_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRYXzVWkZKXG6-QY6NEWSBzJhdIefPXRzM3HGBdw7B7eo_VlJ-GBjut3VY1XD--A6eLMVWwgnwGMam1/pub?gid=462222795&single=true&output=csv"; 
 // IMPORTANT: Replace this with YOUR DEPLOYED GOOGLE APPS SCRIPT WEB APP URL
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzjbFHQxPPU9glAfYmUz1dTYhHzCO5eayYCEhdSsyUUd2Bl5rx5jlpBfs-VefLoIJor/exec"; // <-- PASTE YOUR NEWLY DEPLOYED WEB APP URL HERE
-// For front-end reporting, all employee and branch data will come from Canvassing Data and predefined list.
+// Function to parse DD/MM/YYYY HH:MM:SS string into a Date object reliably
+function parseDDMMYYYYHHMMSS(dateString) {
+    if (!dateString) return null; // Handle empty or null strings
+
+    const parts = dateString.split(' ');
+    if (parts.length < 2) return new Date(dateString); // Fallback if format is unexpected or only date is present
+
+    const datePart = parts[0]; // e.g., "19/06/2025"
+    const timePart = parts[1]; // e.g., "17:16:54"
+
+    const dateSubParts = datePart.split('/');
+    if (dateSubParts.length !== 3) return new Date(dateString); // Fallback
+
+    const day = parseInt(dateSubParts[0], 10);
+    const month = parseInt(dateSubParts[1], 10) - 1; // Month is 0-indexed in JS Date (0-11)
+    const year = parseInt(dateSubParts[2], 10);
+
+    // Create a YYYY-MM-DD string with the time part for reliable parsing
+    const standardDateString = `<span class="math-inline">\{year\}\-</span>{(month + 1).toString().padStart(2, '0')}-<span class="math-inline">\{day\.toString\(\)\.padStart\(2, '0'\)\}T</span>{timePart}`;
+    return new Date(standardDateString);
+}
+    // For front-end reporting, all employee and branch data will come from Canvassing Data and predefined list.
     const EMPLOYEE_MASTER_DATA_URL = "UNUSED"; // Marked as UNUSED for clarity, won't be fetched for reports
 
     const MONTHLY_WORKING_DAYS = 22; // Common approximation for a month's working days
@@ -555,9 +576,16 @@ function displayMessage(message, type = 'info') {
         // Get unique employees who have made at least one entry this month
         const employeesWithActivityThisMonth = [...new Set(allCanvassingData
             .filter(entry => {
-                const entryDate = new Date(entry[HEADER_TIMESTAMP]);
-                return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
-            })
+    const entryDate = parseDDMMYYYYHHMMSS(entry[HEADER_TIMESTAMP]);
+
+    // Crucial check: Ensure the date was successfully parsed
+    if (!entryDate || isNaN(entryDate.getTime())) {
+        console.warn('Skipping entry due to invalid timestamp:', entry[HEADER_TIMESTAMP]);
+        return false; // Exclude entries with invalid dates
+    }
+
+    return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
+})
             .map(entry => entry[HEADER_EMPLOYEE_CODE]))].sort((codeA, codeB) => {
                 const nameA = employeeCodeToNameMap[codeA] || codeA;
                 const nameB = employeeCodeToNameMap[codeB] || codeB;
@@ -637,9 +665,16 @@ function displayMessage(message, type = 'info') {
         // Get all employees who have had activity this month
         const employeesWithActivityThisMonth = [...new Set(allCanvassingData
             .filter(entry => {
-                const entryDate = new Date(entry[HEADER_TIMESTAMP]);
-                return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
-            })
+    const entryDate = parseDDMMYYYYHHMMSS(entry[HEADER_TIMESTAMP]);
+
+    // Crucial check: Ensure the date was successfully parsed
+    if (!entryDate || isNaN(entryDate.getTime())) {
+        console.warn('Skipping entry due to invalid timestamp:', entry[HEADER_TIMESTAMP]);
+        return false; // Exclude entries with invalid dates
+    }
+
+    return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
+})
             .map(entry => entry[HEADER_EMPLOYEE_CODE]))].sort((codeA, codeB) => {
                 const nameA = employeeCodeToNameMap[codeA] || codeA;
                 const nameB = employeeCodeToNameMap[codeB] || codeB;
@@ -761,10 +796,17 @@ function displayMessage(message, type = 'info') {
         const currentYear = new Date().getFullYear();
 
         const employeesInBranch = [...new Set(branchActivityEntries
-            .filter(entry => {
-                const entryDate = new Date(entry[HEADER_TIMESTAMP]);
-                return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
-            })
+           .filter(entry => {
+    const entryDate = parseDDMMYYYYHHMMSS(entry[HEADER_TIMESTAMP]);
+
+    // Crucial check: Ensure the date was successfully parsed
+    if (!entryDate || isNaN(entryDate.getTime())) {
+        console.warn('Skipping entry due to invalid timestamp:', entry[HEADER_TIMESTAMP]);
+        return false; // Exclude entries with invalid dates
+    }
+
+    return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
+})
             .map(entry => entry[HEADER_EMPLOYEE_CODE]))].sort((codeA, codeB) => {
                 const nameA = employeeCodeToNameMap[codeA] || codeA;
                 const nameB = employeeCodeToNameMap[codeB] || codeB;
@@ -845,10 +887,17 @@ function displayMessage(message, type = 'info') {
 
         // Get all employees who have had activity this month
         const employeesWithActivityThisMonth = [...new Set(allCanvassingData
-            .filter(entry => {
-                const entryDate = new Date(entry[HEADER_TIMESTAMP]);
-                return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
-            })
+          .filter(entry => {
+    const entryDate = parseDDMMYYYYHHMMSS(entry[HEADER_TIMESTAMP]);
+
+    // Crucial check: Ensure the date was successfully parsed
+    if (!entryDate || isNaN(entryDate.getTime())) {
+        console.warn('Skipping entry due to invalid timestamp:', entry[HEADER_TIMESTAMP]);
+        return false; // Exclude entries with invalid dates
+    }
+
+    return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
+})
             .map(entry => entry[HEADER_EMPLOYEE_CODE]))].sort((codeA, codeB) => {
                 const nameA = employeeCodeToNameMap[codeA] || codeA;
                 const nameB = employeeCodeToNameMap[codeB] || codeB;
