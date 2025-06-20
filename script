@@ -1,12 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-// This URL is for your Canvassing Data sheet. Ensure it's correct and published as CSV.
-const DATA_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRYXzVWkZKXG6-QY6NEWSBzJhdIefPXRzM3HGBdw7B7eo_VlJ-GBjut3VY1XD--A6eLMVWwgnwGMam1/pub?gid=462222795&single=true&output=csv"; 
-// IMPORTANT: Replace this with YOUR DEPLOYED GOOGLE APPS SCRIPT WEB APP URL
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzjbFHQxPPU9glAfYmUz1dTYhHzCO5eayYCEhdSsyUUd2Bl5rx5jlpBfs-VefLoIJor/exec"; // <-- PASTE YOUR NEWLY DEPLOYED WEB APP URL HERE
-document.addEventListener('DOMContentLoaded', () => {
 
     // --- START: FRONT-END PASSWORD PROTECTION ---
-    const ACCESS_PASSWORD = "sml@4576"; // <--- CHANGE THIS TO YOUR DESIRED PASSWORD
+    const ACCESS_PASSWORD = "YourSecretPassword123"; // <--- CHANGE THIS TO YOUR DESIRED PASSWORD
 
     function authenticateUser() {
         const enteredPassword = prompt("Please enter the access password to proceed:");
@@ -29,17 +24,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // --- END: FRONT-END PASSWORD PROTECTION ---
 
+    // ======================================================================
+    //  BELOW THIS LINE IS WHERE ALL YOUR EXISTING script.js CODE SHOULD GO
+    // ======================================================================
+document.addEventListener('DOMContentLoaded', () => {
+// This URL is for your Canvassing Data sheet. Ensure it's correct and published as CSV.
+const DATA_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRYXzVWkZKXG6-QY6NEWSBzJhdIefPXRzM3HGBdw7B7eo_VlJ-GBjut3VY1XD--A6eLMVWwgnwGMam1/pub?gid=462222795&single=true&output=csv"; 
+// IMPORTANT: Replace this with YOUR DEPLOYED GOOGLE APPS SCRIPT WEB APP URL
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzjbFHQxPPU9glAfYmUz1dTYhHzCO5eayYCEhdSsyUUd2Bl5rx5jlpBfs-VefLoIJor/exec"; // <-- PASTE YOUR NEWLY DEPLOYED WEB APP URL HERE
+document.addEventListener('DOMContentLoaded', () => {
 
-    // All your existing code (DATA_URL, WEB_APP_URL, constants, functions, event listeners, etc.)
-    // should come AFTER the authentication block.
-    // Example:
-    const DATA_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRYXzVWkZKXG6-QY6NEWSBzJhdIefPXRzM3HGBdw7B7eo_VlJ-GBjut3VY1XD--A6eLMVWwgnwGMam1/pub?gid=462222795&single=true&output=csv";
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzjbFHQxPPU9glAfYmUz1dTYhHzCO5eayYCEhdSsyUUd2Bl5rx5jlpBfs-VefLoIJor/exec";
-
-    // ... (rest of your script.js code) ...
-
-    // Your existing DOMContentLoaded closing brace
-});
+ 
 // Function to parse DD/MM/YYYY HH:MM:SS string into a Date object reliably
 function parseDDMMYYYYHHMMSS(dateString) {
     if (!dateString) return null; // Handle empty or null strings
