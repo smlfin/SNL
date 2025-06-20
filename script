@@ -1,5 +1,3 @@
-document.addEventListener('DOMContentLoaded', () => {
-
     // --- START: FRONT-END PASSWORD PROTECTION ---
     const ACCESS_PASSWORD = "YourSecretPassword123"; // <--- CHANGE THIS TO YOUR DESIRED PASSWORD
 
@@ -32,8 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
 const DATA_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRYXzVWkZKXG6-QY6NEWSBzJhdIefPXRzM3HGBdw7B7eo_VlJ-GBjut3VY1XD--A6eLMVWwgnwGMam1/pub?gid=462222795&single=true&output=csv"; 
 // IMPORTANT: Replace this with YOUR DEPLOYED GOOGLE APPS SCRIPT WEB APP URL
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzjbFHQxPPU9glAfYmUz1dTYhHzCO5eayYCEhdSsyUUd2Bl5rx5jlpBfs-VefLoIJor/exec"; // <-- PASTE YOUR NEWLY DEPLOYED WEB APP URL HERE
-document.addEventListener('DOMContentLoaded', () => {
-
+// For front-end reporting, all employee and branch data will come from Canvassing Data and predefined list.
+    const EMPLOYEE_MASTER_DATA_URL = "UNUSED"; // Marked as UNUSED for clarity, won't be fetched for reports
  
 // Function to parse DD/MM/YYYY HH:MM:SS string into a Date object reliably
 function parseDDMMYYYYHHMMSS(dateString) {
