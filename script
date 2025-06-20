@@ -1,62 +1,9 @@
-document.addEventListener('DOMContentLoaded', () => {
-// --- START: FRONT-END PASSWORD PROTECTION ---
-    const ACCESS_PASSWORD = "YourSecretPassword123"; // <--- CHANGE THIS TO YOUR DESIRED PASSWORD
-
-    function authenticateUser() {
-        const enteredPassword = prompt("Please enter the access password to proceed:");
-
-        if (enteredPassword === ACCESS_PASSWORD) {
-            return true; // Password is correct
-        } else {
-            // Password is incorrect or user clicked Cancel
-            alert("Access denied.");
-            document.body.innerHTML = '<h1>Access Denied</h1><p>You do not have permission to view this page.</p>';
-            // If you want a completely blank page, use:
-            // document.body.innerHTML = '';
-            return false; // Stop execution
-        }
-    }
-
-    // Call the authentication function at the very beginning
-    if (!authenticateUser()) {
-        return; // Stop the script if authentication fails
-    }
-    // --- END: FRONT-END PASSWORD PROTECTION ---
-
-    // ======================================================================
-    //  BELOW THIS LINE IS WHERE ALL YOUR EXISTING script.js CODE SHOULD GO
-    // ======================================================================
-
-
+cument.addEventListener('DOMContentLoaded', () => {
 // This URL is for your Canvassing Data sheet. Ensure it's correct and published as CSV.
 const DATA_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRYXzVWkZKXG6-QY6NEWSBzJhdIefPXRzM3HGBdw7B7eo_VlJ-GBjut3VY1XD--A6eLMVWwgnwGMam1/pub?gid=462222795&single=true&output=csv"; 
 // IMPORTANT: Replace this with YOUR DEPLOYED GOOGLE APPS SCRIPT WEB APP URL
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzjbFHQxPPU9glAfYmUz1dTYhHzCO5eayYCEhdSsyUUd2Bl5rx5jlpBfs-VefLoIJor/exec"; // <-- PASTE YOUR NEWLY DEPLOYED WEB APP URL HERE
 // For front-end reporting, all employee and branch data will come from Canvassing Data and predefined list.
-    const EMPLOYEE_MASTER_DATA_URL = "UNUSED"; // Marked as UNUSED for clarity, won't be fetched for reports
- 
-// Function to parse DD/MM/YYYY HH:MM:SS string into a Date object reliably
-function parseDDMMYYYYHHMMSS(dateString) {
-    if (!dateString) return null; // Handle empty or null strings
-
-    const parts = dateString.split(' ');
-    if (parts.length < 2) return new Date(dateString); // Fallback if format is unexpected or only date is present
-
-    const datePart = parts[0]; // e.g., "19/06/2025"
-    const timePart = parts[1]; // e.g., "17:16:54"
-
-    const dateSubParts = datePart.split('/');
-    if (dateSubParts.length !== 3) return new Date(dateString); // Fallback
-
-    const day = parseInt(dateSubParts[0], 10);
-    const month = parseInt(dateSubParts[1], 10) - 1; // Month is 0-indexed in JS Date (0-11)
-    const year = parseInt(dateSubParts[2], 10);
-
-    // Create a YYYY-MM-DD string with the time part for reliable parsing
-    const standardDateString = `<span class="math-inline">\{year\}\-</span>{(month + 1).toString().padStart(2, '0')}-<span class="math-inline">\{day\.toString\(\)\.padStart\(2, '0'\)\}T</span>{timePart}`;
-    return new Date(standardDateString);
-}
-    // For front-end reporting, all employee and branch data will come from Canvassing Data and predefined list.
     const EMPLOYEE_MASTER_DATA_URL = "UNUSED"; // Marked as UNUSED for clarity, won't be fetched for reports
 
     const MONTHLY_WORKING_DAYS = 22; // Common approximation for a month's working days
@@ -92,7 +39,7 @@ function parseDDMMYYYYHHMMSS(dateString) {
         "EDAPALLY", "KOTHAMANGALAM", "PALLURUTHY", "ALAPPUZHA", "PARIPPALLY", "PERUMBAVOOR",
         "MEPPARAMBU", "THIRUVALLA", "ALUVA", "VADAKKEKAD", "KOLLAM", "ANGAMALY",
         // Corrected "Pathanamthitta" typo if it existed previously
-    ].sort();
+    ].sort();;
 
     // --- Column Headers Mapping (IMPORTANT: These must EXACTLY match the column names in your "Form Responses 2" Google Sheet) ---
     const HEADER_TIMESTAMP = 'Timestamp';
