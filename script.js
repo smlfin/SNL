@@ -235,7 +235,47 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzjbFHQxPPU9glAfYmU
     let employeeCodeToDesignationMap = {}; // {code: designation} from Canvassing Data
     let selectedBranchEntries = []; // Activity entries filtered by branch (for main reports section)
     let selectedEmployeeCodeEntries = []; // Activity entries filtered by employee code (for main reports section)
+// Helper function to robustly parse DD/MM/YYYY or DD-MM-YYYY timestamps
+function parseDDMMYYYYTimestamp(timestampStr) {
+    if (!timestampStr) return new Date(NaN); // Return invalid date for empty string
 
+    let datePart, timePart;
+    let day, month, year;
+
+    if (timestampStr.includes(' ')) {
+        [datePart, timePart] = timestampStr.split(' ');
+    } else {
+        datePart = timestampStr;
+        timePart = ''; // No time part
+    }
+
+    if (datePart.includes('/')) {
+        const parts = datePart.split('/');
+        day = parseInt(parts[0], 10);
+        month = parseInt(parts[1], 10) - 1; // Month is 0-indexed (Jan=0, Dec=11)
+        year = parseInt(parts[2], 10);
+    } else if (datePart.includes('-')) {
+        const parts = datePart.split('-');
+        day = parseInt(parts[0], 10);
+        month = parseInt(parts[1], 10) - 1; // Month is 0-indexed
+        year = parseInt(parts[2], 10);
+    } else {
+        // Fallback for unexpected date formats, try native Date parsing
+        return new Date(timestampStr);
+    }
+
+    const date = new Date(year, month, day);
+
+    if (timePart) {
+        const timeParts = timePart.split(':');
+        const hours = parseInt(timeParts[0], 10);
+        const minutes = parseInt(timeParts[1], 10);
+        const seconds = timeParts.length > 2 ? parseInt(timeParts[2], 10) : 0;
+        date.setHours(hours, minutes, seconds);
+    }
+
+    return date;
+}
 
     // Utility to format date to ISO-MM-DD
     const formatDate = (dateString) => {
@@ -652,7 +692,7 @@ function displayMessage(message, type = 'info') {
         // Get unique employees who have made at least one entry this month
         const employeesWithActivityThisMonth = [...new Set(allCanvassingData
             .filter(entry => {
-                const entryDate = new Date(entry[HEADER_TIMESTAMP]);
+                const entryDate = parseDDMMYYYYTimestamp(entry[HEADER_TIMESTAMP]);
                 return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
             })
             .map(entry => entry[HEADER_EMPLOYEE_CODE]))].sort((codeA, codeB) => {
@@ -674,8 +714,8 @@ function displayMessage(message, type = 'info') {
 
             const employeeActivities = allCanvassingData.filter(entry =>
                 entry[HEADER_EMPLOYEE_CODE] === employeeCode &&
-                new Date(entry[HEADER_TIMESTAMP]).getMonth() === currentMonth &&
-                new Date(entry[HEADER_TIMESTAMP]).getFullYear() === currentYear
+               parseDDMMYYYYTimestamp(entry[HEADER_TIMESTAMP]).getMonth() === currentMonth &&
+               parseDDMMYYYYTimestamp(entry[HEADER_TIMESTAMP]).getFullYear() === currentYear
             );
             const { totalActivity } = calculateTotalActivity(employeeActivities);
             
@@ -734,7 +774,7 @@ function displayMessage(message, type = 'info') {
         // Get all employees who have had activity this month
         const employeesWithActivityThisMonth = [...new Set(allCanvassingData
             .filter(entry => {
-                const entryDate = new Date(entry[HEADER_TIMESTAMP]);
+                const entryDate = parseDDMMYYYYTimestamp(entry[HEADER_TIMESTAMP]);
                 return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
             })
             .map(entry => entry[HEADER_EMPLOYEE_CODE]))].sort((codeA, codeB) => {
@@ -766,8 +806,8 @@ function displayMessage(message, type = 'info') {
 
             const employeeActivities = allCanvassingData.filter(entry =>
                 entry[HEADER_EMPLOYEE_CODE] === employeeCode &&
-                new Date(entry[HEADER_TIMESTAMP]).getMonth() === currentMonth &&
-                new Date(entry[HEADER_TIMESTAMP]).getFullYear() === currentYear
+                parseDDMMYYYYTimestamp(entry[HEADER_TIMESTAMP]).getMonth() === currentMonth &&
+                parseDDMMYYYYTimestamp(entry[HEADER_TIMESTAMP]).getFullYear() === currentYear
             );
             const { totalActivity } = calculateTotalActivity(employeeActivities); // Use existing calculation
             
@@ -859,7 +899,7 @@ function displayMessage(message, type = 'info') {
 
         const employeesInBranch = [...new Set(branchActivityEntries
             .filter(entry => {
-                const entryDate = new Date(entry[HEADER_TIMESTAMP]);
+                const entryDate = parseDDMMYYYYTimestamp(entry[HEADER_TIMESTAMP]);
                 return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
             })
             .map(entry => entry[HEADER_EMPLOYEE_CODE]))].sort((codeA, codeB) => {
@@ -943,7 +983,7 @@ function displayMessage(message, type = 'info') {
         // Get all employees who have had activity this month
         const employeesWithActivityThisMonth = [...new Set(allCanvassingData
             .filter(entry => {
-                const entryDate = new Date(entry[HEADER_TIMESTAMP]);
+                const entryDate = parseDDMMYYYYTimestamp(entry[HEADER_TIMESTAMP]);
                 return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
             })
             .map(entry => entry[HEADER_EMPLOYEE_CODE]))].sort((codeA, codeB) => {
@@ -975,8 +1015,8 @@ function displayMessage(message, type = 'info') {
 
             const employeeActivities = allCanvassingData.filter(entry =>
                 entry[HEADER_EMPLOYEE_CODE] === employeeCode &&
-                new Date(entry[HEADER_TIMESTAMP]).getMonth() === currentMonth &&
-                new Date(entry[HEADER_TIMESTAMP]).getFullYear() === currentYear
+                parseDDMMYYYYTimestamp(entry[HEADER_TIMESTAMP]).getMonth() === currentMonth &&
+                parseDDMMYYYYTimestamp(entry[HEADER_TIMESTAMP]).getFullYear() === currentYear
             );
             const { totalActivity } = calculateTotalActivity(employeeActivities); // Use existing calculation
             
@@ -1040,7 +1080,7 @@ function displayMessage(message, type = 'info') {
         const currentYear = new Date().getFullYear();
 
         const currentMonthEntries = employeeCodeEntries.filter(entry => {
-            const entryDate = new Date(entry[HEADER_TIMESTAMP]);
+            const entryDate = parseDDMMYYYYTimestamp(entry[HEADER_TIMESTAMP]);
             return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
         });
 
@@ -1127,7 +1167,7 @@ function displayMessage(message, type = 'info') {
         const currentYear = new Date().getFullYear();
 
         const currentMonthEntries = employeeCodeEntries.filter(entry => {
-            const entryDate = new Date(entry[HEADER_TIMESTAMP]);
+            const entryDate = parseDDMMYYYYTimestamp(entry[HEADER_TIMESTAMP]);
             return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
         });
 
@@ -1518,7 +1558,7 @@ function displayMessage(message, type = 'info') {
 
         // Aggregate activities for the current month
         allCanvassingData.forEach(entry => {
-            const entryDate = new Date(entry[HEADER_TIMESTAMP]);
+            const entryDate = parseDDMMYYYYTimestamp(entry[HEADER_TIMESTAMP]);
             if (entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear) {
                 const employeeCode = entry[HEADER_EMPLOYEE_CODE];
                 if (employeeActivitySummary[employeeCode]) {
