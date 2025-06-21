@@ -1,10 +1,108 @@
-cument.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- START: TWO-TIERED FRONT-END PASSWORD PROTECTION ---
+    const ACCESS_PASSWORD_FULL = "sml4576"; // Full access password
+    const ACCESS_PASSWORD_LIMITED = "123";  // Limited access password
+    let currentAccessLevel = null; // To store 'full' or 'limited'
+    const accessDeniedOverlay = document.getElementById('accessDeniedOverlay');
+    const dashboardContent = document.getElementById('dashboardContent');
+    const secretPasswordInputContainer = document.getElementById('secretPasswordInputContainer');
+    const secretPasswordInput = document.getElementById('secretPasswordInput');
+    const submitSecretPasswordBtn = document.getElementById('submitSecretPassword');
+    const passwordErrorMessage = document.getElementById('passwordErrorMessage');
+   // Get references to buttons/tabs that need conditional access
+    const downloadOverallStaffPerformanceReportBtn = document.getElementById('downloadOverallStaffPerformanceReportBtn');
+    const detailedCustomerViewTabBtn = document.getElementById('detailedCustomerViewTabBtn');
+    const viewAllEntriesButton = document.getElementById('viewAllEntriesBtn'); // <--- ADD THIS LINE (OR UPDATE THE EXISTING PLACEHOLDER)
+       if (secretPasswordInput) {
+        secretPasswordInput.focus();
+    }
+    submitSecretPasswordBtn.addEventListener('click', () => {
+        checkAndSetAccess();
+    });
+    secretPasswordInput.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter') {
+            checkAndSetAccess();
+        }
+    });
+
+    function checkAndSetAccess() {
+        const enteredPassword = secretPasswordInput.value;
+
+        if (enteredPassword === ACCESS_PASSWORD_FULL) {
+            currentAccessLevel = 'full';
+            grantAccess();
+        } else if (enteredPassword === ACCESS_PASSWORD_LIMITED) {
+            currentAccessLevel = 'limited';
+            grantAccess();
+        } else {
+            passwordErrorMessage.textContent = "Incorrect password. Try again.";
+            passwordErrorMessage.style.display = 'block';
+            secretPasswordInput.value = '';
+            secretPasswordInput.focus();
+        }
+    }
+
+   function grantAccess() {
+    console.log("grantAccess function called!"); // Add this line
+    accessDeniedOverlay.style.display = 'none'; // Hide overlay
+    console.log("Access overlay hidden."); // Add this line
+
+    console.log("Value of dashboardContent:", dashboardContent); // Add this line
+    if (dashboardContent) { // Add this if statement
+        dashboardContent.style.display = 'block';   // Show dashboard content
+        console.log("Dashboard content display set to block."); // Add this line
+    } else {
+        console.error("Error: dashboardContent element not found!"); // Add this line
+    }
+
+    // Apply access restrictions based on currentAccessLevel
+    applyAccessRestrictions();
+    // Now, call your main processing function that starts everything
+    processData(); // This fetches your data
+    // Set initial tab based on access level
+    if (currentAccessLevel === 'limited') {
+        showTab('allBranchSnapshotTabBtn');
+    } else {
+        // Full access users get the default initial tab
+        showTab('allBranchSnapshotTabBtn');
+    }
+}
+
+    function applyAccessRestrictions() {
+        if (currentAccessLevel === 'limited') {
+            // Hide "Download Overall Performance" button
+            if (downloadOverallStaffPerformanceReportBtn) {
+                downloadOverallStaffPerformanceReportBtn.style.display = 'none';
+            }
+            // Hide "Detailed Customer View" tab
+            if (detailedCustomerViewTabBtn) {
+                detailedCustomerViewTabBtn.style.display = 'none';
+            }
+            // Hide "View all entries" button
+            if (viewAllEntriesButton) { // <--- ADD THIS BLOCK
+                viewAllEntriesButton.style.display = 'none';
+            }
+        } else if (currentAccessLevel === 'full') {
+            // Ensure all are visible for full access
+            if (downloadOverallStaffPerformanceReportBtn) {
+                downloadOverallStaffPerformanceReportBtn.style.display = 'inline-block'; // Or 'block', depending on your CSS
+            }
+            if (detailedCustomerViewTabBtn) {
+                detailedCustomerViewTabBtn.style.display = 'inline-block'; // Or 'block'
+            }
+            if (viewAllEntriesButton) { // <--- ADD THIS BLOCK
+                viewAllEntriesButton.style.display = 'inline-block'; // Or 'block'
+            }
+        }
+    }
+   
 // This URL is for your Canvassing Data sheet. Ensure it's correct and published as CSV.
 const DATA_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRYXzVWkZKXG6-QY6NEWSBzJhdIefPXRzM3HGBdw7B7eo_VlJ-GBjut3VY1XD--A6eLMVWwgnwGMam1/pub?gid=462222795&single=true&output=csv"; 
 // IMPORTANT: Replace this with YOUR DEPLOYED GOOGLE APPS SCRIPT WEB APP URL
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzjbFHQxPPU9glAfYmUz1dTYhHzCO5eayYCEhdSsyUUd2Bl5rx5jlpBfs-VefLoIJor/exec"; // <-- PASTE YOUR NEWLY DEPLOYED WEB APP URL HERE
 // For front-end reporting, all employee and branch data will come from Canvassing Data and predefined list.
-    const EMPLOYEE_MASTER_DATA_URL = "UNUSED"; // Marked as UNUSED for clarity, won't be fetched for reports
+   // const EMPLOYEE_MASTER_DATA_URL = "UNUSED"; // Marked as UNUSED for clarity, won't be fetched for reports
 
     const MONTHLY_WORKING_DAYS = 22; // Common approximation for a month's working days
 
@@ -36,10 +134,11 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzjbFHQxPPU9glAfYmU
     };
     // Predefined list of branches for the dropdown and "no participation" check
     const PREDEFINED_BRANCHES = [
-        "EDAPALLY", "KOTHAMANGALAM", "PALLURUTHY", "ALAPPUZHA", "PARIPPALLY", "PERUMBAVOOR",
-        "MEPPARAMBU", "THIRUVALLA", "ALUVA", "VADAKKEKAD", "KOLLAM", "ANGAMALY",
-        // Corrected "Pathanamthitta" typo if it existed previously
-    ].sort();;
+        "Angamaly", "Corporate Office", "Edappally", "Harippad", "Koduvayur", "Kuzhalmannam",
+        "Mattanchery", "Mavelikara", "Nedumkandom", "Nenmara", "Paravoor", "Perumbavoor",
+        "Thiruwillamala", "Thodupuzha", "Chengannur", "Alathur", "Kottayam", "Kattapana",
+        "Muvattupuzha", "Thiruvalla", "Pathanamthitta", "Kunnamkulam", "HO KKM" // Corrected "Pathanamthitta" typo if it existed previously
+    ].sort();
 
     // --- Column Headers Mapping (IMPORTANT: These must EXACTLY match the column names in your "Form Responses 2" Google Sheet) ---
     const HEADER_TIMESTAMP = 'Timestamp';
@@ -83,7 +182,7 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzjbFHQxPPU9glAfYmU
     const allStaffOverallPerformanceTabBtn = document.getElementById('allStaffOverallPerformanceTabBtn');
     const nonParticipatingBranchesTabBtn = document.getElementById('nonParticipatingBranchesTabBtn');
     const branchPerformanceTabBtn = document.getElementById('branchPerformanceTabBtn');
-    const detailedCustomerViewTabBtn = document.getElementById('detailedCustomerViewTabBtn');
+   // const  = document.getElementById('detailedCustomerViewTabBtn');
     const employeeManagementTabBtn = document.getElementById('employeeManagementTabBtn');
 
     // Dropdowns & Filter Panels
@@ -128,7 +227,7 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzjbFHQxPPU9glAfYmU
 
     // Download Buttons
     const downloadDetailedCustomerReportBtn = document.getElementById('downloadDetailedCustomerReportBtn');
-    const downloadOverallStaffPerformanceReportBtn = document.getElementById('downloadOverallStaffPerformanceReportBtn'); 
+    // const downloadOverallStaffPerformanceReportBtn = document.getElementById('downloadOverallStaffPerformanceReportBtn'); 
     
     // Global variables to store fetched data
     let allCanvassingData = []; // Raw activity data from Form Responses 2
@@ -555,16 +654,9 @@ function displayMessage(message, type = 'info') {
         // Get unique employees who have made at least one entry this month
         const employeesWithActivityThisMonth = [...new Set(allCanvassingData
             .filter(entry => {
-    const entryDate = parseDDMMYYYYHHMMSS(entry[HEADER_TIMESTAMP]);
-
-    // Crucial check: Ensure the date was successfully parsed
-    if (!entryDate || isNaN(entryDate.getTime())) {
-        console.warn('Skipping entry due to invalid timestamp:', entry[HEADER_TIMESTAMP]);
-        return false; // Exclude entries with invalid dates
-    }
-
-    return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
-})
+                const entryDate = new Date(entry[HEADER_TIMESTAMP]);
+                return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
+            })
             .map(entry => entry[HEADER_EMPLOYEE_CODE]))].sort((codeA, codeB) => {
                 const nameA = employeeCodeToNameMap[codeA] || codeA;
                 const nameB = employeeCodeToNameMap[codeB] || codeB;
@@ -644,16 +736,9 @@ function displayMessage(message, type = 'info') {
         // Get all employees who have had activity this month
         const employeesWithActivityThisMonth = [...new Set(allCanvassingData
             .filter(entry => {
-    const entryDate = parseDDMMYYYYHHMMSS(entry[HEADER_TIMESTAMP]);
-
-    // Crucial check: Ensure the date was successfully parsed
-    if (!entryDate || isNaN(entryDate.getTime())) {
-        console.warn('Skipping entry due to invalid timestamp:', entry[HEADER_TIMESTAMP]);
-        return false; // Exclude entries with invalid dates
-    }
-
-    return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
-})
+                const entryDate = new Date(entry[HEADER_TIMESTAMP]);
+                return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
+            })
             .map(entry => entry[HEADER_EMPLOYEE_CODE]))].sort((codeA, codeB) => {
                 const nameA = employeeCodeToNameMap[codeA] || codeA;
                 const nameB = employeeCodeToNameMap[codeB] || codeB;
@@ -670,7 +755,7 @@ function displayMessage(message, type = 'info') {
         const csvRows = [];
 
         // Add main headers
-        let headers = ['Employee Name', 'Branch Name', 'Designation'];
+        let headers = ['Employee Name', 'Branch Name', 'Employee Code'];
         metrics.forEach(metric => {
             headers.push(`${metric} Actual`, `${metric} Target`, `${metric} %`);
         });
@@ -691,7 +776,7 @@ function displayMessage(message, type = 'info') {
             const targets = TARGETS[designation] || TARGETS['Default']; // Use existing targets
             const performance = calculatePerformance(totalActivity, targets); // Use existing performance calculation
 
-            let rowData = [employeeName, branchName, designation];
+            let rowData = [employeeName, branchName, employeeCode];
             metrics.forEach(metric => {
                 const actualValue = totalActivity[metric] || 0;
                 const targetValue = targets[metric] || 0;
@@ -775,17 +860,10 @@ function displayMessage(message, type = 'info') {
         const currentYear = new Date().getFullYear();
 
         const employeesInBranch = [...new Set(branchActivityEntries
-           .filter(entry => {
-    const entryDate = parseDDMMYYYYHHMMSS(entry[HEADER_TIMESTAMP]);
-
-    // Crucial check: Ensure the date was successfully parsed
-    if (!entryDate || isNaN(entryDate.getTime())) {
-        console.warn('Skipping entry due to invalid timestamp:', entry[HEADER_TIMESTAMP]);
-        return false; // Exclude entries with invalid dates
-    }
-
-    return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
-})
+            .filter(entry => {
+                const entryDate = new Date(entry[HEADER_TIMESTAMP]);
+                return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
+            })
             .map(entry => entry[HEADER_EMPLOYEE_CODE]))].sort((codeA, codeB) => {
                 const nameA = employeeCodeToNameMap[codeA] || codeA;
                 const nameB = employeeCodeToNameMap[codeB] || codeB;
@@ -866,17 +944,10 @@ function displayMessage(message, type = 'info') {
 
         // Get all employees who have had activity this month
         const employeesWithActivityThisMonth = [...new Set(allCanvassingData
-          .filter(entry => {
-    const entryDate = parseDDMMYYYYHHMMSS(entry[HEADER_TIMESTAMP]);
-
-    // Crucial check: Ensure the date was successfully parsed
-    if (!entryDate || isNaN(entryDate.getTime())) {
-        console.warn('Skipping entry due to invalid timestamp:', entry[HEADER_TIMESTAMP]);
-        return false; // Exclude entries with invalid dates
-    }
-
-    return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
-})
+            .filter(entry => {
+                const entryDate = new Date(entry[HEADER_TIMESTAMP]);
+                return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
+            })
             .map(entry => entry[HEADER_EMPLOYEE_CODE]))].sort((codeA, codeB) => {
                 const nameA = employeeCodeToNameMap[codeA] || codeA;
                 const nameB = employeeCodeToNameMap[codeB] || codeB;
@@ -893,7 +964,7 @@ function displayMessage(message, type = 'info') {
         const csvRows = [];
 
         // Add main headers
-        let headers = ['Employee Name', 'Branch Name', 'Designation'];
+        let headers = ['Employee Name', 'Branch Name', 'Employee Code'];
         metrics.forEach(metric => {
             headers.push(`${metric} Actual`, `${metric} Target`, `${metric} %`);
         });
@@ -914,7 +985,7 @@ function displayMessage(message, type = 'info') {
             const targets = TARGETS[designation] || TARGETS['Default']; // Use existing targets
             const performance = calculatePerformance(totalActivity, targets); // Use existing performance calculation
 
-            let rowData = [employeeName, branchName, designation];
+            let rowData = [employeeName, branchName, employeeCode];
             metrics.forEach(metric => {
                 const actualValue = totalActivity[metric] || 0;
                 const targetValue = targets[metric] || 0;
