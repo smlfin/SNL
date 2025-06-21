@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- START: TWO-TIERED FRONT-END PASSWORD PROTECTION ---
-    const ACCESS_PASSWORD_FULL = "sml4576"; // Full access password
+    const ACCESS_PASSWORD_FULL = "biju123"; // Full access password
     const ACCESS_PASSWORD_LIMITED = "123";  // Limited access password
     let currentAccessLevel = null; // To store 'full' or 'limited'
     const accessDeniedOverlay = document.getElementById('accessDeniedOverlay');
