@@ -113,8 +113,38 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzjbFHQxPPU9glAfYmU
             'Reference': 1 * MONTHLY_WORKING_DAYS,
             'New Customer Leads': 20
         },
-        'Investment Staff': { // Added Investment Staff with custom Visit target
-            'Visit': 15,
+         'Branch Head': {
+            'Visit': 10,
+            'Call': 3 * MONTHLY_WORKING_DAYS,
+            'Reference': 1 * MONTHLY_WORKING_DAYS,
+            'New Customer Leads': 20
+        },
+         'Sr Accounts Manager': {
+            'Visit': 10,
+            'Call': 3 * MONTHLY_WORKING_DAYS,
+            'Reference': 1 * MONTHLY_WORKING_DAYS,
+            'New Customer Leads': 20
+        },
+        'Accounts Manager': {
+            'Visit': 10,
+            'Call': 3 * MONTHLY_WORKING_DAYS,
+            'Reference': 1 * MONTHLY_WORKING_DAYS,
+            'New Customer Leads': 20
+        },
+         'Sr Accounts Manager': {
+            'Visit': 10,
+            'Call': 3 * MONTHLY_WORKING_DAYS,
+            'Reference': 1 * MONTHLY_WORKING_DAYS,
+            'New Customer Leads': 20
+        },
+         'Sr Branch Head': {
+            'Visit': 10,
+            'Call': 3 * MONTHLY_WORKING_DAYS,
+            'Reference': 1 * MONTHLY_WORKING_DAYS,
+            'New Customer Leads': 20
+        },
+        'Asst. Branch Head': { // Added Investment Staff with custom Visit target
+            'Visit': 10,
             'Call': 3 * MONTHLY_WORKING_DAYS,
             'Reference': 1 * MONTHLY_WORKING_DAYS,
             'New Customer Leads': 20
