@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
    
 // This URL is for your Canvassing Data sheet. Ensure it's correct and published as CSV.
-const DATA_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRYXzVWkZKXG6-QY6NEWSBzJhdIefPXRzM3HGBdw7B7eo_VlJ-GBjut3VY1XD--A6eLMVWwgnwGMam1/pub?gid=462222795&single=true&output=csv"; 
+const DATA_URL = "https://docs.google.com/spreadsheets/d/1-pa-PE9F2t9Xm2oxjed3zSjJz5b7xXdEHev3Zuv2Ynk/export?format=csv&gid=462222795"; 
 // IMPORTANT: Replace this with YOUR DEPLOYED GOOGLE APPS SCRIPT WEB APP URL
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzjbFHQxPPU9glAfYmUz1dTYhHzCO5eayYCEhdSsyUUd2Bl5rx5jlpBfs-VefLoIJor/exec"; // <-- PASTE YOUR NEWLY DEPLOYED WEB APP URL HERE
 // For front-end reporting, all employee and branch data will come from Canvassing Data and predefined list.
