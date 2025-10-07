@@ -277,18 +277,23 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzjbFHQxPPU9glAfYmU
         return date.toISOString().split('T')[0];
     };
 
-  // NEW HELPER FUNCTION TO PARSE DATE WITH SECONDS (Included here for context, ensure it's present in your full script)
+ // NEW HELPER FUNCTION TO PARSE DATE WITH TIME - FIX FOR MISSING SECONDS AND HYPHENS
 function parseDateWithTime(dateString) {
-    // Expected format: DD/MM/YYYY HH:MM:SS
-    const parts = dateString.match(/(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2}):(\d{2})/);
+    // This regex looks for: DD separator MM separator YYYY space HH:MM (optional :SS)
+    // The separator ([-\/]) matches either a hyphen or a slash.
+    const parts = dateString.match(/(\d{2})([-\/])(\d{2})\2(\d{4})\s(\d{2}):(\d{2})(?::(\d{2}))?/);
+
     if (parts) {
-        const [, day, month, year, hours, minutes, seconds] = parts;
+        // parts[1] = day, parts[3] = month, parts[4] = year, parts[5] = hours, parts[6] = minutes, parts[7] = seconds (optional)
+        const [, day, , month, year, hours, minutes, seconds] = parts;
         // Note: Month is 0-indexed in JavaScript Date objects (January is 0, December is 11)
-        return new Date(year, month - 1, day, hours, minutes, seconds);
+        const sec = seconds || '00'; // Default to 00 seconds if missing
+        
+        return new Date(year, month - 1, day, hours, minutes, sec);
     }
-    // Fallback for potentially different formats or invalid dates
-    // This might still produce an invalid date if the format is very off,
-    // but the main goal is to handle DD/MM/YYYY HH:MM:SS correctly.
+    
+    // Fallback: This is less reliable but kept from your original code. 
+    // It will be triggered if the regex fails entirely.
     return new Date(dateString); 
 }
 
